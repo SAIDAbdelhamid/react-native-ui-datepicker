@@ -21,6 +21,7 @@ const DaySelector = () => {
     maximumDate,
     firstDayOfWeek,
     theme,
+    disabledDates,
   } = useCalendarContext();
   const { year, month, hour, minute } = getParsedDate(currentDate);
 
@@ -32,7 +33,8 @@ const DaySelector = () => {
         displayFullDays,
         minimumDate,
         maximumDate,
-        firstDayOfWeek
+        firstDayOfWeek,
+        disabledDates
       ).map((day) => {
         return day
           ? {
@@ -44,7 +46,15 @@ const DaySelector = () => {
       });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [month, year, displayFullDays, minimumDate, maximumDate, selectedDate]
+    [
+      month,
+      year,
+      displayFullDays,
+      minimumDate,
+      maximumDate,
+      selectedDate,
+      disabledDates,
+    ]
   );
 
   const handleSelectDate = useCallback(

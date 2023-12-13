@@ -26,6 +26,7 @@ interface PropTypes extends CalendarTheme, HeaderProps {
   locale?: string | ILocale;
   minimumDate?: DateType;
   maximumDate?: DateType;
+  disabledDates?: DateType[];
   firstDayOfWeek?: number;
   onValueChange?: (value: DateType) => void;
   displayFullDays?: boolean;
@@ -37,6 +38,7 @@ const DateTimePicker = ({
   locale = 'en',
   minimumDate = null,
   maximumDate = null,
+  disabledDates = [],
   firstDayOfWeek = 0,
   onValueChange = () => {},
   displayFullDays = false,
@@ -205,6 +207,7 @@ const DateTimePicker = ({
         firstDayOfWeek:
           firstDayOfWeek >= 0 && firstDayOfWeek <= 6 ? firstDayOfWeek : 0,
         theme,
+        disabledDates,
       }}
     >
       <Calendar

@@ -81,6 +81,7 @@ export const getParsedDate = (date: DateType) => {
  * @param minimumDate - min selectable date
  * @param maximumDate - max selectable date
  * @param firstDayOfWeek - first day of week, number 0-6, 0 – Sunday, 6 – Saturday
+ * @param disabledDates - disabled date list
  *
  * @returns days array based on current date
  */
@@ -89,7 +90,8 @@ export const getMonthDays = (
   displayFullDays: boolean,
   minimumDate: DateType,
   maximumDate: DateType,
-  firstDayOfWeek: number
+  firstDayOfWeek: number,
+  disabledDates: DateType[]
 ): IDayObject[] => {
   const date = getDate(datetime);
   const daysInMonth = date.daysInMonth();
@@ -101,7 +103,14 @@ export const getMonthDays = (
     ? Array.from({ length: dayOfMonth }, (_, i) => {
         const day = i + (prevMonthDays - dayOfMonth + 1);
         const thisDay = date.add(-1, 'month').date(day);
-        return generateDayObject(day, thisDay, minimumDate, maximumDate, false);
+        return generateDayObject(
+          day,
+          thisDay,
+          minimumDate,
+          maximumDate,
+          false,
+          disabledDates
+        );
       })
     : Array(dayOfMonth).fill(null);
 
@@ -115,13 +124,27 @@ export const getMonthDays = (
   const currentDays = Array.from({ length: daysInMonth }, (_, i) => {
     const day = i + 1;
     const thisDay = date.date(day);
-    return generateDayObject(day, thisDay, minimumDate, maximumDate, true);
+    return generateDayObject(
+      day,
+      thisDay,
+      minimumDate,
+      maximumDate,
+      true,
+      disabledDates
+    );
   });
 
   const nextDays = Array.from({ length: nextMonthDays }, (_, i) => {
     const day = i + 1;
     const thisDay = date.add(1, 'month').date(day);
-    return generateDayObject(day, thisDay, minimumDate, maximumDate, false);
+    return generateDayObject(
+      day,
+      thisDay,
+      minimumDate,
+      maximumDate,
+      false,
+      disabledDates
+    );
   });
 
   return [...prevDays, ...currentDays, ...nextDays];
@@ -134,6 +157,7 @@ export const getMonthDays = (
  * @param date - calculated date based on day, month, and year
  * @param minDate - min selectable date
  * @param maxDate - max selectable date
+ * @param disabledDates - disabled date list
  * @param isCurrentMonth - define the day is in the current month
  *
  * @returns days object based on current date
@@ -143,7 +167,8 @@ const generateDayObject = (
   date: dayjs.Dayjs,
   minDate: DateType,
   maxDate: DateType,
-  isCurrentMonth: boolean
+  isCurrentMonth: boolean,
+  disabledDates: DateType[]
 ) => {
   let disabled = false;
   if (minDate) {
@@ -151,6 +176,11 @@ const generateDayObject = (
   }
   if (maxDate && !disabled) {
     disabled = date > getDate(maxDate);
+  }
+  if (disabledDates && disabledDates.length > 0 && !disabled) {
+    disabled = Boolean(
+      disabledDates.find((disabledDate) => date === getDate(disabledDate))
+    );
   }
   return {
     text: day.toString(),

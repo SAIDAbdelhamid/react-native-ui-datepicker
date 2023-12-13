@@ -21,6 +21,7 @@ export interface CalendarContextType extends CalendarState {
   onSelectYear: (year: number) => void;
   onChangeMonth: (value: number) => void;
   onChangeYear: (value: number) => void;
+  disabledDates: DateType[];
 }
 
 const CalendarContext = createContext({} as CalendarContextType);
